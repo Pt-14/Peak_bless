@@ -1,0 +1,74 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.*.local
+*.env
+
+# Build outputs
+dist/
+build/
+out/
+coverage/
+
+# Logs
+logs/
+*.log
+pids/
+*.pid
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Misc
+.cache/
+*.tgz
+*.tmp
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Optional: lockfiles (uncomment if you don't want to track lockfiles)
+# package-lock.json
+# yarn.lock
+
+# Optional: local IDE settings
+.localhistory/
+
+# Windows
+ehthumbs.db
+Icon?
+
+# Mac
+.AppleDouble
+.LSOverride
+
+# npm package directories
+.npm
+
+# Parcel / Next / other frameworks
+.next/
+.parcel-cache/
+
+# Temporary generated files
+tmp/
+temp/
+
+# Ignore log directories used by some libraries
+logs/
+
+# End of file
