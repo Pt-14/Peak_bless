@@ -7,7 +7,7 @@ module.exports = {
       res.json(products);
     } catch (error) {
       console.error("Error loading products:", error);
-      res.status(500).json({ error: "Error loading products" });
+      res.status(500).json({ error: "Error loading products" });k
     }
   },
 
