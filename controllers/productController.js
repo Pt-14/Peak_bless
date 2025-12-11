@@ -34,6 +34,6 @@ module.exports = {
     res.json(products[index]);
     console.log("Load products");
     console.log("Add product");
-
+    console.log("Delete product");
   }
 };
