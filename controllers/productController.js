@@ -33,6 +33,7 @@ module.exports = {
     save(products);
     res.json(products[index]);
     console.log("Load products");
+    console.log("Add product");
 
   }
 };
