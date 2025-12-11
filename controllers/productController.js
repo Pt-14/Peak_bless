@@ -32,5 +32,7 @@ module.exports = {
     products[index] = { ...products[index], ...req.body };
     save(products);
     res.json(products[index]);
+    console.log("Load products");
+
   }
 };
