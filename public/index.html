@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product List</title>
+</head>
+<body>
+  <h1>Danh sách sản phẩm</h1>
+  <div id="list"></div>
+
+  <script>
+    fetch("http://localhost:5000/api/products")
+      .then(res => res.json())
+      .then(data => {
+        let html = data.map(p => `
+          <div>
+            <h3>${p.name}</h3>
+            <p>Giá: ${p.price}</p>
+            <img width="120" src="${p.image}">
+          </div>
+        `).join("");
+
+        document.getElementById("list").innerHTML = html;
+      });
+  </script>
+</body>
+</html>
