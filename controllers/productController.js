@@ -1,41 +1,60 @@
-const fs = require("fs");
-
-const load = () => JSON.parse(fs.readFileSync("products.json"));
-const save = (data) => fs.writeFileSync("products.json", JSON.stringify(data, null, 2));
+const Product = require("../models/Product");
 
 module.exports = {
-  getAll(req, res) {
-    res.json(load());
+  async getAll(req, res) {
+    try {
+      const products = await Product.find().sort({ createdAt: -1 });
+      res.json(products);
+    } catch (error) {
+      console.error("Error loading products:", error);
+      res.status(500).json({ error: "Error loading products" });
+    }
   },
 
-  add(req, res) {
-    const products = load();
-    const newProduct = { id: Date.now(), ...req.body };
-    products.push(newProduct);
-    save(products);
-    res.json(newProduct);
+  async add(req, res) {
+    try {
+      const { name, price, image } = req.body;
+      const newProduct = new Product({
+        name,
+        price,
+        image
+      });
+      const savedProduct = await newProduct.save();
+      res.json(savedProduct);
+    } catch (error) {
+      console.error("Error adding product:", error);
+      res.status(500).json({ error: "Error adding product" });
+    }
   },
 
-  delete(req, res) {
-    const products = load();
-    const newList = products.filter(p => p.id !== Number(req.params.id));
-    save(newList);
-    res.json({ message: "Deleted" });
+  async delete(req, res) {
+    try {
+      const product = await Product.findByIdAndDelete(req.params.id);
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      res.json({ message: "Deleted" });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      res.status(500).json({ error: "Error deleting product" });
+    }
   },
 
-  update(req, res) {
-    const products = load();
-    const id = Number(req.params.id);
-    const index = products.findIndex(p => p.id === id);
-    if (index === -1) return res.status(404).json({ error: "Not found" });
-
-    products[index] = { ...products[index], ...req.body };
-    save(products);
-    res.json(products[index]);
-    console.log("Load products");
-    console.log("Add product");
-    console.log("Delete product");
-    console.log("Update product");
-    console.log("Product operations completed");
+  async update(req, res) {
+    try {
+      const { name, price, image } = req.body;
+      const product = await Product.findByIdAndUpdate(
+        req.params.id,
+        { name, price, image },
+        { new: true, runValidators: true }
+      );
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      res.json(product);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).json({ error: "Error updating product" });
+    }
   }
 };
