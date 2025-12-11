@@ -17,10 +17,63 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    h1 {
-      text-align: center;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 30px;
+    }
+    h1 {
       color: #333;
+      margin: 0;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #2980b9;
+    }
+    .btn-danger {
+      background-color: #e74c3c;
+      color: white;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+    .btn-warning {
+      background-color: #f39c12;
+      color: white;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+    .btn-warning:hover {
+      background-color: #d68910;
+    }
+    .btn-success {
+      background-color: #27ae60;
+      color: white;
+    }
+    .btn-success:hover {
+      background-color: #229954;
+    }
+    .btn-secondary {
+      background-color: #95a5a6;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background-color: #7f8c8d;
     }
     #list {
       display: grid;
@@ -33,6 +86,8 @@
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
     .product-card:hover {
       transform: translateY(-5px);
@@ -46,6 +101,9 @@
     }
     .product-info {
       padding: 15px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
     .product-id {
       font-size: 12px;
@@ -63,6 +121,11 @@
       font-size: 18px;
       color: #e74c3c;
       font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .product-actions {
+      display: flex;
+      gap: 8px;
     }
     .error {
       text-align: center;
@@ -71,18 +134,158 @@
       background: white;
       border-radius: 8px;
     }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      padding: 30px;
+      border: 1px solid #888;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .modal-header h2 {
+      margin: 0;
+      color: #333;
+    }
+    .close {
+      font-size: 28px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .close:hover {
+      color: #000;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: bold;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    }
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      display: none;
+    }
+    .alert.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    .alert.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Danh sách sản phẩm</h1>
+    <div class="header">
+      <h1>Danh sách sản phẩm</h1>
+      <button class="btn btn-primary" onclick="openAddModal()">+ Thêm sản phẩm</button>
+    </div>
     <div id="list"></div>
   </div>
 
+  <!-- Add/Edit Product Modal -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Thêm sản phẩm mới</h2>
+        <button class="close" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalAlert" class="alert"></div>
+      <form id="productForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label>Tên sản phẩm</label>
+          <input type="text" id="productName" required placeholder="Nhập tên sản phẩm">
+        </div>
+        <div class="form-group">
+          <label>Giá (VNĐ)</label>
+          <input type="number" id="productPrice" required placeholder="Nhập giá" min="0">
+        </div>
+        <div class="form-group">
+          <label>Link hình ảnh</label>
+          <input type="url" id="productImage" placeholder="Nhập URL hình ảnh">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+          <button type="submit" class="btn btn-success" id="submitBtn">Thêm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
+    let editingProductId = null;
+    const API_URL = "http://localhost:5000/api/products";
+
+    // Load và hiển thị danh sách sản phẩm
     async function loadProducts() {
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Lỗi tải dữ liệu");
         
         const products = await response.json();
@@ -99,6 +302,10 @@
               <div class="product-id">ID: ${p.id}</div>
               <div class="product-name">${p.name}</div>
               <div class="product-price">${Number(p.price).toLocaleString('vi-VN')} đ</div>
+              <div class="product-actions">
+                <button class="btn btn-warning" onclick="openEditModal(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, '${(p.image || '').replace(/'/g, "\\'")}')">✏️ Sửa</button>
+                <button class="btn btn-danger" onclick="deleteProduct(${p.id})">🗑️ Xóa</button>
+              </div>
             </div>
           </div>
         `).join("");
@@ -109,6 +316,122 @@
       }
     }
 
+    // Mở modal thêm sản phẩm mới
+    function openAddModal() {
+      editingProductId = null;
+      document.getElementById("modalTitle").textContent = "Thêm sản phẩm mới";
+      document.getElementById("submitBtn").textContent = "Thêm";
+      document.getElementById("productForm").reset();
+      document.getElementById("modalAlert").className = "alert";
+      document.getElementById("modalAlert").textContent = "";
+      document.getElementById("productModal").classList.add("active");
+    }
+
+    // Mở modal sửa sản phẩm
+    function openEditModal(id, name, price, image) {
+      editingProductId = id;
+      document.getElementById("modalTitle").textContent = "Sửa sản phẩm";
+      document.getElementById("submitBtn").textContent = "Cập nhật";
+      document.getElementById("productName").value = name;
+      document.getElementById("productPrice").value = price;
+      document.getElementById("productImage").value = image;
+      document.getElementById("modalAlert").className = "alert";
+      document.getElementById("modalAlert").textContent = "";
+      document.getElementById("productModal").classList.add("active");
+    }
+
+    // Đóng modal
+    function closeModal() {
+      document.getElementById("productModal").classList.remove("active");
+      document.getElementById("productForm").reset();
+      editingProductId = null;
+    }
+
+    // Xử lý submit form (thêm hoặc sửa)
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById("productName").value.trim();
+      const price = Number(document.getElementById("productPrice").value);
+      const image = document.getElementById("productImage").value.trim();
+
+      if (!name) {
+        showAlert("Vui lòng nhập tên sản phẩm", "error");
+        return;
+      }
+      if (price < 0) {
+        showAlert("Giá không được âm", "error");
+        return;
+      }
+
+      try {
+        let response;
+        const data = { name, price, image };
+
+        if (editingProductId) {
+          // Sửa sản phẩm
+          response = await fetch(`${API_URL}/${editingProductId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+        } else {
+          // Thêm sản phẩm mới
+          response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+        }
+
+        if (!response.ok) throw new Error("Lỗi từ máy chủ");
+
+        showAlert(editingProductId ? "Cập nhật sản phẩm thành công!" : "Thêm sản phẩm thành công!", "success");
+        setTimeout(() => {
+          closeModal();
+          loadProducts();
+        }, 1000);
+      } catch (error) {
+        showAlert(`Lỗi: ${error.message}`, "error");
+      }
+    }
+
+    // Xóa sản phẩm
+    async function deleteProduct(id) {
+      if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/${id}`, {
+          method: "DELETE"
+        });
+
+        if (!response.ok) throw new Error("Lỗi từ máy chủ");
+
+        alert("Xóa sản phẩm thành công!");
+        loadProducts();
+      } catch (error) {
+        alert(`Lỗi: ${error.message}`);
+      }
+    }
+
+    // Hiển thị thông báo
+    function showAlert(message, type) {
+      const alertDiv = document.getElementById("modalAlert");
+      alertDiv.className = `alert ${type}`;
+      alertDiv.textContent = message;
+    }
+
+    // Đóng modal khi bấm ngoài
+    window.onclick = function(event) {
+      const modal = document.getElementById("productModal");
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    // Load sản phẩm khi trang mở
     loadProducts();
   </script>
 </body>

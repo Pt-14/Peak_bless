@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Laptop Dell XPS",
+    "name": "Laptop Dell",
     "price": 25000000,
     "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop"
   },
@@ -22,11 +22,5 @@
     "name": "AirPods Pro",
     "price": 6000000,
     "image": "https://images.unsplash.com/photo-1606841837239-c5a1a8a07af7?w=400&h=300&fit=crop"
-  },
-  {
-    "id": 5,
-    "name": "iPad Air",
-    "price": 18000000,
-    "image": "https://images.unsplash.com/photo-1542716278-ca282fc2d38d?w=400&h=300&fit=crop"
   }
 ]
