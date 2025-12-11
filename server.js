@@ -13,4 +13,31 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/products", productRoutes);
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+const DEFAULT_PORT = 5000;
+const portEnv = process.env.PORT ? Number(process.env.PORT) : DEFAULT_PORT;
+
+function startServer(port) {
+	const server = app.listen(port, () =>
+		console.log(`Server running on port ${port}`)
+	);
+
+	server.on("error", (err) => {
+		if (err && err.code === "EADDRINUSE") {
+			console.error(`Port ${port} is already in use.`);
+			if (port === DEFAULT_PORT) {
+				const fallback = port + 1;
+				console.log(`Trying fallback port ${fallback}...`);
+				// try one fallback port
+				startServer(fallback);
+			} else {
+				console.error("No more fallback ports to try. Exiting.");
+				process.exit(1);
+			}
+		} else {
+			console.error("Server error:", err);
+			process.exit(1);
+		}
+	});
+}
+
+startServer(portEnv);
