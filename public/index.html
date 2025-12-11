@@ -1,26 +1,115 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Product List</title>
+  <title>Danh sách sản phẩm</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    #list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background-color: #f0f0f0;
+    }
+    .product-info {
+      padding: 15px;
+    }
+    .product-id {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 5px;
+    }
+    .product-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+      min-height: 40px;
+    }
+    .product-price {
+      font-size: 18px;
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    .error {
+      text-align: center;
+      color: #e74c3c;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Danh sách sản phẩm</h1>
-  <div id="list"></div>
+  <div class="container">
+    <h1>Danh sách sản phẩm</h1>
+    <div id="list"></div>
+  </div>
 
   <script>
-    fetch("http://localhost:5000/api/products")
-      .then(res => res.json())
-      .then(data => {
-        let html = data.map(p => `
-          <div>
-            <h3>${p.name}</h3>
-            <p>Giá: ${p.price}</p>
-            <img width="120" src="${p.image}">
+    async function loadProducts() {
+      try {
+        const response = await fetch("http://localhost:5000/api/products");
+        if (!response.ok) throw new Error("Lỗi tải dữ liệu");
+        
+        const products = await response.json();
+        
+        if (products.length === 0) {
+          document.getElementById("list").innerHTML = '<div class="error">Không có sản phẩm nào</div>';
+          return;
+        }
+
+        let html = products.map(p => `
+          <div class="product-card">
+            <img src="${p.image || 'https://via.placeholder.com/250x200'}" alt="${p.name}" class="product-image">
+            <div class="product-info">
+              <div class="product-id">ID: ${p.id}</div>
+              <div class="product-name">${p.name}</div>
+              <div class="product-price">${Number(p.price).toLocaleString('vi-VN')} đ</div>
+            </div>
           </div>
         `).join("");
 
         document.getElementById("list").innerHTML = html;
-      });
+      } catch (error) {
+        document.getElementById("list").innerHTML = `<div class="error">⚠️ Không thể tải danh sách sản phẩm: ${error.message}</div>`;
+      }
+    }
+
+    loadProducts();
   </script>
 </body>
 </html>
