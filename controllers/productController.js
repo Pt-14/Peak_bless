@@ -36,5 +36,6 @@ module.exports = {
     console.log("Add product");
     console.log("Delete product");
     console.log("Update product");
+    console.log("Product operations completed");
   }
 };
